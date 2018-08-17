@@ -1134,6 +1134,7 @@ function drawMapMarkers(map, data)
 
         //draw gps or event marker
         markerImage = 'https://ifits.github.io/ifits-map/images/' + markerImage;
+        console.log("markerImage="+markerImage);
         addInfoWindow[gMarkerCnt] = new google.maps.InfoWindow({content: info});
         arrGlobaMarkerList[gMarkerCnt] = new google.maps.Marker({
             position: new google.maps.LatLng(latitude, longitude),
