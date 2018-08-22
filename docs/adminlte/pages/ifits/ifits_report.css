@@ -1,0 +1,32 @@
+table {
+	font-family: Trebuchet;
+    font-size: 12px;
+}
+
+td {
+	text-align: left;
+}
+html, body, #map_canvas {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+	padding: 0px
+}
+/* Pop-up info window */
+.info_window {
+    width: 300px;
+    height: 100px;
+    text-align: left;
+}
+
+.checkboxTree li {
+    list-style-type: none;
+    position: relative;
+}
+
+.checkboxTree li span {
+    cursor: default;
+    position: absolute;
+    top: 1px;
+    left: -16px;
+}

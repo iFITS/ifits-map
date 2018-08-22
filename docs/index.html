@@ -1,0 +1,599 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Report | Dashboard</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="https://ifits.github.io/ifits-map/adminlte/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://ifits.github.io/ifits-map/adminlte/bower_components/font-awesome/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://ifits.github.io/ifits-map/adminlte/bower_components/Ionicons/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="https://ifits.github.io/ifits-map/adminlte/dist/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="https://ifits.github.io/ifits-map/adminlte/dist/css/skins/_all-skins.min.css">
+  <!-- bootstrap wysihtml5 - text editor -->
+  <link rel="stylesheet" href="https://ifits.github.io/ifits-map/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+
+  <link rel="stylesheet" href="https://ifits.github.io/ifits-map/adminlte/pages/ifits/ifits_report.css">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+
+  <!-- Google Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+</head>
+
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDpVaUxpIxnQYARWH75OyAJ1POOIgX0NtU&libraries=visualization">
+    </script>
+
+    <script src="https://ifits.github.io/ifits-map/adminlte/pages/ifits/res/Intel_JavaScripts.js"></script>
+    <script src="https://ifits.github.io/ifits-map/adminlte/pages/ifits/ifits_report.js"></script>
+    <script src="gps_rf_data.js"></script>
+
+    <!-- jQuery 3 -->
+    <script src="https://ifits.github.io/ifits-map/adminlte/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="https://ifits.github.io/ifits-map/adminlte/pages/ifits/res/jquery-ui.js"></script>
+    <!-- Bootstrap 3.3.7 -->
+    <script src="https://ifits.github.io/ifits-map/adminlte/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- DataTables -->
+    <script src="https://ifits.github.io/ifits-map/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="https://ifits.github.io/ifits-map/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <!-- SlimScroll -->
+    <script src="https://ifits.github.io/ifits-map/adminlte/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- FastClick -->
+    <script src="https://ifits.github.io/ifits-map/adminlte/bower_components/fastclick/lib/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="https://ifits.github.io/ifits-map/adminlte/dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="https://ifits.github.io/ifits-map/adminlte/dist/js/demo.js"></script>
+    <!-- page script -->
+    <script src="https://ifits.github.io/ifits-map/adminlte/pages/ifits/res/jquery.checkboxtree.min.js"></script>
+
+<script>
+
+	var raw_data = getData();
+    var data = cleanData(raw_data);
+    //console.log("data="+data);
+
+	function getGpsData() {
+		var gpsData=[];
+		gpsData[0] = ['Latitude', 'Longitude', 'Speed','Direction','Gps Marker Image'];
+		gpsData = gpsData.concat(pickGpsData(raw_data));
+		return gpsData;
+	}
+
+	function getEventData() {
+		var eventData=[];
+		eventData[0] = ['Latitude', 'Longitude', 'File Name',  'STT Index' ,'RSRP(dBm)','RSRQ(dB)','RSCP(dBm)','EcIo(dBm)','RxLev(dBm)','RxQual(dB)', 'Event','Additional Info','Location ID','Cause','MAC DL Tput(Mbps)','RLC DL Tput(Mbps)','PDCP DL Tput(Mbps)','HO Type','Target Cell ID','Target EARFCN','C-RNTI','Interruption','Event Marker Image'];
+		eventData = eventData.concat(pickEventData(raw_data, "rsrp"));
+		eventData = eventData.concat(pickEventData(raw_data, "rsrq"));
+		return eventData;
+	}
+
+</script>
+
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+  <header class="main-header">
+    <!-- Logo -->
+    <a href="#" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>FT</b></span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>FT Test Report</b></span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+
+    </nav>
+  </header>
+
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">Dashboard</li>
+
+        <li>
+          <a href="#results">
+            <i class="fa fa-table"></i>
+            <span>Results</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="#map">
+            <i class="fa fa-map-marker"></i>
+            <span>Map</span>
+          </a>
+        </li>
+
+        <li class="active treeview">
+          <a href="#">
+            <i class="fa fa-line-chart"></i>
+            <span>Charts</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+              <li><a href="#rf_chart"><i class="fa fa-circle-o text-green"></i>RF Chart</a></li>
+              <li><a href="#speed_chart"><i class="fa fa-circle-o text-yellow"></i>Speed Chart</a></li>
+              <li><a href="#direction_chart"><i class="fa fa-circle-o text-blue"></i>Direction Chart</a></li>
+          </ul>
+        </li>
+
+
+        <li class="active treeview">
+          <a href="#">
+            <i class="fa fa-book"></i>
+            <span>Documentation</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+              <li><a href="https://wiki.ith.intel.com/display/ft"><i class="fa fa-wikipedia-w"></i>FT wiki</a></li>
+              <li><a href="https://wiki.ith.intel.com/display/ft"><i class="fa fa-github-square"></i>FT github</a></li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        FT Test Report
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+      <div class="row">
+        <div class="col-xs-12">
+
+
+          <div class="box" id="results">
+            <div class="box-header">
+              <h3 class="box-title">Test Results</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="result_table" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>DateTime</th>
+                  <th>Latitude</th>
+                  <th>Longitude</th>
+                  <th>Speed</th>
+                  <th>Direction</th>
+                  <th>STT Index</th>
+                  <th>RSRP(dBm)</th>
+                  <th>RSRQ(dBm)</th>
+                  <th>RSSNR(dBm)</th>
+                  <th>PCI</th>
+                  <th>EARFCN</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                <tr>
+                  <th>DateTime</th>
+                  <th>Latitude</th>
+                  <th>Longitude</th>
+                  <th>Speed</th>
+                  <th>Direction</th>
+                  <th>STT Index</th>
+                  <th>RSRP(dBm)</th>
+                  <th>RSRQ(dBm)</th>
+                  <th>RSSNR(dBm)</th>
+                  <th>PCI</th>
+                  <th>EARFCN</th>
+                </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+
+      <div class="row">
+        <div class="col-xs-12">
+
+
+          <div class="box" id="map">
+            <div class="box-header">
+              <h3 class="box-title">Google Map</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+
+
+
+<TABLE border=0 cellSpacing=2 cellPadding=1 width="100%" bgColor=white cols=1>
+    <TBODY>
+    <TR>
+        <TD width=25%>
+            <DIV class=ui-widget-daredevel-checkboxTree>
+                <UL id="events">
+                    <LI><INPUT CHECKED type=checkbox><LABEL><FONT size=4><STRONG>Select All
+                        Events</STRONG></FONT></LABEL>
+                        <UL>
+                            <LI><INPUT CHECKED type=checkbox><LABEL><FONT size=3><STRONG>Failure Events</STRONG></FONT></LABEL>
+                                <UL>
+                                    <LI><INPUT onchange="toggleMarkers(compRouteParams, 'FailureEvent_OOS')"
+                                               CHECKED type=checkbox><LABEL>OOS in Good Radio Conditions</LABEL>
+                                    <LI><INPUT onchange="toggleMarkers(compRouteParams, 'FailureEvent_RLF')"
+                                               CHECKED type=checkbox><LABEL>Radio Link Failure</LABEL>
+                                    <LI><INPUT
+                                            onchange="toggleMarkers(compRouteParams, 'FailureEvent_HandoverFail')"
+                                            CHECKED type=checkbox><LABEL>Handover Fail</LABEL>
+                                    <LI><INPUT
+                                            onchange="toggleMarkers(compRouteParams, 'FailureEvent_ReestFail')"
+                                            CHECKED type=checkbox><LABEL>Re-establish Fail</LABEL>
+                                    <LI><INPUT onchange="toggleMarkers(compRouteParams, 'FailureEvent_TauFail')"
+                                               CHECKED type=checkbox><LABEL>Tracking Area Update Fail</LABEL>
+                                    <LI><INPUT
+                                            onchange="toggleMarkers(compRouteParams, 'FailureEvent_PingLoss')"
+                                            CHECKED type=checkbox><LABEL>Ping Loss</LABEL>
+                                    <LI><INPUT
+                                            onchange="toggleMarkers(compRouteParams, 'FailureEvent_VoLTECallDrop')"
+                                            CHECKED type=checkbox><LABEL>VoLTE Call Drop</LABEL>
+                                    <LI><INPUT onchange="toggleMarkers(compRouteParams, 'FailureEvent_Misc')"
+                                               CHECKED type=checkbox><LABEL>Misc</LABEL></LI>
+                                </UL>
+                            <LI><INPUT CHECKED type=checkbox><LABEL><FONT size=3><STRONG>Other
+                                Events</STRONG></FONT></LABEL>
+                                <UL>
+                                    <LI><INPUT onchange="toggleMarkers(compRouteParams, 'RrcConnectionRequest')"
+                                               CHECKED type=checkbox><LABEL>Connection Request</LABEL>
+                                    <LI><INPUT onchange="toggleMarkers(compRouteParams, 'Release')" CHECKED
+                                               type=checkbox><LABEL>Connection Release</LABEL>
+                                    <LI><INPUT onchange="toggleMarkers(compRouteParams, 'TauSuccess')" CHECKED
+                                               type=checkbox><LABEL>Tracking Area Update Success</LABEL>
+                                    <LI><INPUT onchange="toggleMarkers(compRouteParams, 'HandoverSuccess')"
+                                               CHECKED type=checkbox><LABEL>Handover Success</LABEL>
+                                    <LI><INPUT onchange="toggleMarkers(compRouteParams, 'sCellInfo')" CHECKED
+                                               type=checkbox><LABEL>S-Cell Info</LABEL>
+                                    <LI><INPUT CHECKED type=checkbox><LABEL><FONT
+                                            size=2><STRONG>VoLTE</STRONG></FONT></LABEL>
+                                        <UL>
+                                            <LI><INPUT onchange="toggleMarkers(compRouteParams, 'VolteDial')"
+                                                       CHECKED type=checkbox><LABEL>Dialing</LABEL>
+                                            <LI><INPUT onchange="toggleMarkers(compRouteParams, 'VolteConnect')"
+                                                       CHECKED type=checkbox><LABEL>Connected</LABEL>
+                                            <LI><INPUT
+                                                    onchange="toggleMarkers(compRouteParams, 'VolteDisconnect')"
+                                                    CHECKED type=checkbox><LABEL>Disconnected</LABEL></LI>
+                                        </UL>
+                                    </LI>
+                                </UL>
+                            <LI><INPUT CHECKED type=checkbox><LABEL><FONT
+                                    size=3><STRONG>Throughput</STRONG></FONT></LABEL>
+                                <UL>
+                                    <LI><INPUT onchange="toggleMarkers(compRouteParams, 'MacDlTput')" CHECKED
+                                               type=checkbox><LABEL>MAC DL Throughput</LABEL>
+                                    <LI><INPUT onchange="toggleMarkers(compRouteParams, 'RlcDlTput')" CHECKED
+                                               type=checkbox><LABEL>RLC DL Throughput</LABEL>
+                                    <LI><INPUT onchange="toggleMarkers(compRouteParams, 'PdcpDlTput')" CHECKED
+                                               type=checkbox><LABEL>PDCP DL Throughput</LABEL></LI>
+                                </UL>
+                            <LI><INPUT CHECKED type=checkbox><LABEL><FONT
+                                    size=3><STRONG>Measurements</STRONG></FONT></LABEL>
+                                <UL>
+                                    <LI><INPUT CHECKED type=checkbox><LABEL><FONT
+                                            size=2><STRONG>LTE</STRONG></FONT></LABEL>
+                                        <UL>
+                                            <LI><INPUT onchange="toggleMarkers(compRouteParams, 'PcellRsrpBox')"
+                                                       CHECKED type=checkbox><LABEL
+                                                    title="Brown: < -120 &#13; Red: -110 to -120 &#13; Orange: -110 to -95 &#13; Yellow: -95 to -85 &#13; Light Green: -85 to -70 &#13; Dark Green: -70 to -55 &#13; Blue: > -55">P-Cell
+                                                RSRP</LABEL>
+                                            <LI><INPUT onchange="toggleMarkers(compRouteParams, 'PcellRsrqBox')"
+                                                       CHECKED type=checkbox><LABEL
+                                                    title="Brown: < -20 &#13; Red: -20 to -16 &#13; Orange: -16 to -12 &#13; Yellow: -12 to -8 &#13; Green: > -8">P-Cell
+                                                RSRQ</LABEL>
+                                            <LI><INPUT onchange="toggleMarkers(compRouteParams, 'ScellRsrpBox')"
+                                                       CHECKED type=checkbox><LABEL
+                                                    title="Brown: < -120 &#13; Red: -110 to -120 &#13; Orange: -110 to -95 &#13; Yellow: -95 to -85 &#13; Light Green: -85 to -70 &#13; Dark Green: -70 to -55 &#13; Blue: > -55">S-Cell
+                                                RSRP</LABEL>
+                                            <LI><INPUT onchange="toggleMarkers(compRouteParams, 'ScellRsrqBox')"
+                                                       CHECKED type=checkbox><LABEL
+                                                    title="Brown: < -20 &#13; Red: -20 to -16 &#13; Orange: -16 to -12 &#13; Yellow: -12 to -8 &#13; Green: > -8">S-Cell
+                                                RSRQ</LABEL></LI>
+                                        </UL>
+                                    <LI><INPUT CHECKED type=checkbox><LABEL><FONT
+                                            size=2><STRONG>UMTS</STRONG></FONT></LABEL>
+                                        <UL>
+                                            <LI><INPUT onchange="toggleMarkers(compRouteParams, 'RscpBox')"
+                                                       CHECKED type=checkbox><LABEL
+                                                    title="Brown: < -120 &#13; Red: -110 to -120 &#13; Orange: -110 to -95 &#13; Yellow: -95 to -85 &#13; Light Green: -85 to -70 &#13; Dark Green: -70 to -55 &#13; Blue: > -55">RSCP</LABEL>
+                                            <LI><INPUT onchange="toggleMarkers(compRouteParams, 'EcioBox')"
+                                                       CHECKED type=checkbox><LABEL
+                                                    title="Brown: < -20 &#13; Red: -20 to -16 &#13; Orange: -16 to -12 &#13; Yellow: -12 to -8 &#13; Green: > -8">EcIo</LABEL>
+                                            </LI>
+                                        </UL>
+                                    <LI><INPUT CHECKED type=checkbox><LABEL><FONT
+                                            size=2><STRONG>GSM</STRONG></FONT></LABEL>
+                                        <UL>
+                                            <LI><INPUT onchange="toggleMarkers(compRouteParams, 'RxlevBox')"
+                                                       CHECKED type=checkbox><LABEL
+                                                    title="Brown: < -120 &#13; Red: -110 to -120 &#13; Orange: -110 to -95 &#13; Yellow: -95 to -85 &#13; Light Green: -85 to -70 &#13; Dark Green: -70 to -55 &#13; Blue: > -55">RxLev</LABEL>
+                                            <LI><INPUT onchange="toggleMarkers(compRouteParams, 'RxqualBox')"
+                                                       CHECKED type=checkbox><LABEL
+                                                    title="Brown: < -20 &#13; Red: -20 to -16 &#13; Orange: -16 to -12 &#13; Yellow: -12 to -8 &#13; Green: > -8">RxQual</LABEL>
+                                            </LI>
+                                        </UL>
+                                    </LI>
+                                </UL>
+                            </LI>
+                        </UL>
+                    </LI>
+                </UL>
+            </DIV>
+        </TD>
+        <TD>
+            <P id=PING_LOSS_LOCATIONS>
+            <CENTER>
+            <script>
+                var compRouteParams = new Object();
+
+                compRouteParams.showGps = true;
+                compRouteParams.gpsData = getGpsData();
+                compRouteParams.centerPoint = [compRouteParams.gpsData[1][1], compRouteParams.gpsData[1][0]];
+                compRouteParams.eventData = getEventData();
+
+            </script>
+                <BUTTON id=map_button onclick="drawMap('map_canvas', compRouteParams, 'map_button')">Draw Map
+                </BUTTON>
+                <label><INPUT onclick="toggleMarkers(compRouteParams, 'GpsMarker')" CHECKED type=checkbox>GPS</label>
+                <TABLE border=1>
+                    <TBODY>
+                    <TR>
+                        <TD height=930 width=950>
+                            <DIV id="map_canvas"></DIV>
+                        </TD>
+                    </TR>
+                    </TBODY>
+                </TABLE>
+            </CENTER>
+            <P></P>
+            <P>&nbsp;</P></TD>
+    </TR>
+    </TBODY>
+</TABLE>
+
+
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+
+      <div class="row">
+        <div class="col-xs-12">
+          <!-- LINE CHART -->
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">RF Signals Chart</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div id="rf_chart" style="width: 100%; height: 350px"></div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col (RIGHT) -->
+
+        <div class="col-xs-12">
+          <!-- LINE CHART -->
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Speed Chart</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div id="speed_chart" style="width: 100%; height: 350px"></div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        <!-- /.col (RIGHT) -->
+
+        <div class="col-xs-12">
+          <!-- LINE CHART -->
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Direction Chart</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div id="direction_chart" style="width: 100%; height: 350px"></div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        <!-- /.col (RIGHT) -->
+
+      </div>
+      <!-- /.row -->
+
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 1.0.0
+    </div>
+    <strong>Copyright &copy; 2018-2019 <a href="#">Intel FT TECH</a>.</strong> All rights
+    reserved.
+  </footer>
+
+  <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://unpkg.com/mathjs@5.1.0/dist/math.min.js"></script>
+<script>
+  $(function () {
+    $('#result_table').DataTable()
+  })
+
+  //console.log("appending data into table");
+  var table = document.getElementById('result_table').getElementsByTagName('tbody')[0];
+  var row_length = table.rows.length;
+  //console.log("table row length="+row_length);
+
+  var col_length = document.getElementById('result_table').getElementsByTagName('thead')[0].rows[0].cells.length;
+  //console.log("table column length="+col_length);
+
+  var row,cell;
+  for(var i=1;i<data.length;i++){
+    row = table.insertRow(table.rows.length);
+    for(var j=0;j<data[0].length;j++){
+      cell = row.insertCell(j);cell.innerHTML = data[i][j];
+    }
+  }
+
+
+    $('#events').checkboxTree({
+            collapseImage: 'https://ifits.github.io/ifits-map/adminlte/pages/ifits/images/minus.png',
+            expandImage: 'https://ifits.github.io/ifits-map/adminlte/pages/ifits/images/plus.png'
+    });
+
+    /* Initial function that executes all other functions needed when the page is loaded */
+    modEventsTable(['Events_Table']);
+
+
+      var speedData = getSubset(data, [0,3]);
+      var directionData = getSubset(data, [0,4]);
+      var rfData = getSubset(data, [0,6,7,8]);
+
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawSpeedChart);
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawDirectionChart);
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawRfChart);
+
+      function getSubset(data, indexList) {
+        var data = math.matrix(data);
+        var size = data.size();
+        var row=size[0],col=size[1];
+        //console.log("data.size()="+row+":"+col);
+        return math.subset(data,math.index(math.range(0,row),indexList))._data;
+      }
+
+      function drawSpeedChart() {
+        var chartData = google.visualization.arrayToDataTable(speedData);
+
+        var options = {
+          title: 'Speed',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+        var speed_chart = document.getElementById('speed_chart');
+        var chart = new google.visualization.LineChart(speed_chart);
+        google.visualization.events.addListener(chart, 'ready', function () {
+            //speed_chart.innerHTML = '<img src="' + chart.getImageURI() + '">';
+        });
+        chart.draw(chartData, options);
+      }
+
+      function drawDirectionChart() {
+        var chartData = google.visualization.arrayToDataTable(directionData);
+
+        var options = {
+          title: 'Direction',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+        var direction_chart = document.getElementById('direction_chart');
+        var chart = new google.visualization.LineChart(direction_chart);
+        google.visualization.events.addListener(chart, 'ready', function () {
+            //direction_chart.innerHTML = '<img src="' + chart.getImageURI() + '">';
+        });
+        chart.draw(chartData, options);
+      }
+
+      function drawRfChart() {
+        var chartData = google.visualization.arrayToDataTable(rfData);
+
+        var options = {
+          title: 'RF Signals',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var rf_chart = document.getElementById('rf_chart');
+        var chart = new google.visualization.LineChart(rf_chart);
+        google.visualization.events.addListener(chart, 'ready', function () {
+            //rf_chart.innerHTML = '<img src="' + chart.getImageURI() + '">';
+        });
+        chart.draw(chartData, options);
+      }
+
+</script>
+
+</body>
+</html>
