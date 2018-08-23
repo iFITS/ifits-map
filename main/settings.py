@@ -37,9 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.gis',
+    'django.contrib.sites',
     'ifits_map',
+    'pinax.blog',
+    'pinax.images',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -64,10 +67,16 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'pinax.blog.context_processors.scoped'
             ],
         },
     },
 ]
+
+PINAX_BLOG_SCOPING_URL_VAR = "nuangua"
+PINAX_BLOG_SCOPING_MODEL = "auth.User"
+PINAX_BLOG_HOOKSET = "ifits_map.hooks.HookSet"
+
 
 WSGI_APPLICATION = 'main.wsgi.application'
 
